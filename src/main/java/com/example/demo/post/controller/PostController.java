@@ -2,6 +2,7 @@ package com.example.demo.post.controller;
 
 import com.example.demo.post.domain.Post;
 import com.example.demo.post.service.PostService;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,18 @@ public class PostController {
     @GetMapping
     public List<Post> getAll() {
         return postService.getAll();
+    }
+
+    @PutMapping("/{postId}")
+    public Post updateById(@PathVariable Long postId,
+                           @RequestParam String title,
+                           @RequestParam String content) {
+        return postService.update(postId,title,content);
+    }
+
+    @DeleteMapping("/{postId}")
+    public void deleteById(@PathVariable Long postId) {
+        postService.delete(postId);
     }
 
 
