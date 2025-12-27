@@ -37,7 +37,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<User> DoLogin(SignUpDto dto) {
-        return userRepository.findByUsername(dto.getUsername());
+    public Optional<User> DoLogin(String username) {
+        return userRepository.findByUsername(username);
     }
 }
