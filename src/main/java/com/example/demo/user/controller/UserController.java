@@ -1,6 +1,5 @@
 package com.example.demo.user.controller;
 
-import com.example.demo.user.domain.User;
 import com.example.demo.user.dto.SignUpDto;
 import com.example.demo.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -38,5 +37,4 @@ public class UserController {
            return ResponseEntity.badRequest().body(e.getMessage());
        }
     }
-
 }

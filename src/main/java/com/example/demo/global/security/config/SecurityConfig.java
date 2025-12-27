@@ -31,15 +31,19 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/",true)
                         .permitAll())
                 .logout(logout -> logout
-                        .logoutUrl("/user/logout")
-                        .logoutSuccessUrl("/")
+                        .logoutUrl("/api/users/logout") // 로그아웃 URL 설정
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                            response.setContentType("application/json;charset=UTF-8");
+                            response.getWriter().write("{\"message\": \"로그아웃 성공\"}");
+                        })
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/","/api/users/signup","/user/login","/users/logout",
+                                "/","/api/users/signup","/login",
                                 "/css/**","/js/**","/images/**","/webjars/**")
                         .permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
