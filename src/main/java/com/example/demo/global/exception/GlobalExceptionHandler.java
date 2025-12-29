@@ -17,15 +17,24 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException e) {
         // 에러가 발생한 필드와 메시지를 맵에 담는다.
         Map<String, String> errors = new LinkedHashMap<>();
-        for (FieldError fe : e.getBindingResult().getFieldErrors()) {
+        for (FieldError fe : e.getBindingResult().getFieldErrors()) { // 에러 리스트를 출력해줌.
             errors.putIfAbsent(fe.getField(), fe.getDefaultMessage());
             // 예: "username" -> "아이디는 필수 입력 값입니다."
-        } // putIfAbsent <<-- 이거 좀 기억하기 중요함!!!
+        } /*
+        putIfAbsent 는 왜 쓸까?
+        예)--------------------------------------------------------
+        @NotBlank(message = "제목은 필수입니다.")
+        @Size(min = 5, message = "제목은 5글자 이상이어야 합니다.")
+        private String title;
+        -----------------------------------------------------------
+        이것처럼 예외가 2개 이상인건 putIfAbsent 이걸 사용해야 둘다 예외가 터져도 첫번째 저장된 예외를 사용자에게 보여줌.
+        * 만약 put을 사용하게 되면 마지막 예외를 보여줘서 헷갈리게 만들수 있다.
+        */
 
         ErrorCode errorCode = ErrorCode.VALIDATION_ERROR;
-        return ResponseEntity
-                .status(errorCode.getStatus())
-                .body(ErrorResponse.of(errorCode, errors));
+        return ResponseEntity // ResponseEntity 타입 (사용자에게 json 형태로 보이게 해줌.)
+                .status(errorCode.getStatus()) // 현재 상태코드 예) 400 등등
+                .body(ErrorResponse.of(errorCode, errors)); // 사용자에게 보여질 body 부분. 매개변수로 두개를 넣는다.
     }
 
     @ExceptionHandler(CustomException.class)
