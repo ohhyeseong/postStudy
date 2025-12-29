@@ -24,8 +24,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .formLogin(formLogin -> formLogin
-                        .loginPage("/user/login")
-                        .loginProcessingUrl("/login")
+                        .loginPage("/api/users/login")
+                        .loginProcessingUrl("/api/users/login")
                         .usernameParameter("username")
                         .passwordParameter("password")
                         .successHandler(((request, response, authentication) -> {

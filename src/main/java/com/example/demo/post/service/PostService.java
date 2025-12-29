@@ -1,5 +1,7 @@
 package com.example.demo.post.service;
 
+import com.example.demo.global.exception.CustomException;
+import com.example.demo.global.exception.ErrorCode;
 import com.example.demo.post.domain.Post;
 import com.example.demo.post.repository.PostRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -30,7 +32,7 @@ public class PostService {
     // 게시글 아이디로 조회
     public Post getById(Long postId) {
         return postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("Post not found. id= "+ postId));
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
     }
     
     // 게시글 목록 조회(최신순)
@@ -44,7 +46,7 @@ public class PostService {
     @Transactional
     public Post update(Long postId, String title, String content) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("Post not found. id=" + postId));
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
         post.update(title, content);
         return post;
@@ -54,7 +56,7 @@ public class PostService {
     @Transactional
     public void delete(Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("Post not found. id=" + postId));
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         postRepository.delete(post);
     }
 }
