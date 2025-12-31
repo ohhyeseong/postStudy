@@ -1,5 +1,6 @@
 package com.example.demo.post.controller;
 
+import com.example.demo.global.response.ApiResponse;
 import com.example.demo.post.domain.Post;
 import com.example.demo.post.dto.PostCreateRequest;
 import com.example.demo.post.dto.PostResponse;
@@ -22,9 +23,9 @@ public class PostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PostResponse create(@Valid @RequestBody PostCreateRequest request) {
+    public ApiResponse<PostResponse> create(@Valid @RequestBody PostCreateRequest request) {
         Post post = postService.create(request.title(), request.content());
-        return PostResponse.from(post);
+        return ApiResponse.ok(PostResponse.from(post));
     }
 
     @GetMapping("/{postId}")
@@ -34,10 +35,12 @@ public class PostController {
     }
 
     @GetMapping
-    public List<PostResponse> getAll() {
-        return postService.getAll().stream()//stream 뭔지 알아보자잉
+    public ApiResponse<List<PostResponse>> getAll() {
+        List<PostResponse> data = postService.getAll().stream()//stream 뭔지 알아보자잉
                 .map(PostResponse::from)// 이것도 왜 이렇게 쓰는지 알아보기
                 .toList();
+
+        return ApiResponse.ok(data);
     }
 
     @PutMapping("/{postId}")
@@ -49,8 +52,9 @@ public class PostController {
 
     @DeleteMapping("/{postId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable Long postId) {
+    public ApiResponse<Void> deleteById(@PathVariable Long postId) {
         postService.delete(postId);
+        return ApiResponse.ok();
     }
 
 

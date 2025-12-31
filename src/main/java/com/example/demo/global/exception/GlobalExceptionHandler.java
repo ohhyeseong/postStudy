@@ -1,5 +1,6 @@
 package com.example.demo.global.exception;
 
+import com.example.demo.global.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,7 +15,7 @@ public class GlobalExceptionHandler {
 
     // 우리가 만든 CustomException이 발생하면 잡는다.
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException e) {
+    public ResponseEntity<ApiResponse<Void>> handleValidation(MethodArgumentNotValidException e) {
         // 에러가 발생한 필드와 메시지를 맵에 담는다.
         Map<String, String> errors = new LinkedHashMap<>();
         for (FieldError fe : e.getBindingResult().getFieldErrors()) { // 에러 리스트를 출력해줌.
@@ -34,23 +35,23 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = ErrorCode.VALIDATION_ERROR;
         return ResponseEntity // ResponseEntity 타입 (사용자에게 json 형태로 보이게 해줌.)
                 .status(errorCode.getStatus()) // 현재 상태코드 예) 400 등등
-                .body(ErrorResponse.of(errorCode, errors)); // 사용자에게 보여질 body 부분. 매개변수로 두개를 넣는다.
+                .body(ApiResponse.error(errorCode, errors)); // 사용자에게 보여질 body 부분. 매개변수로 두개를 넣는다.
     }
 
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<ErrorResponse> handleCustom(CustomException e) {
+    public ResponseEntity<ApiResponse<Void>> handleCustom(CustomException e) {
         ErrorCode errorCode = e.getErrorCode();
         return ResponseEntity
                 .status(errorCode.getStatus())
-                .body(ErrorResponse.of(errorCode));
+                .body(ApiResponse.error(errorCode));
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception e) {
+    public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
         ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
         return ResponseEntity
                 .status(errorCode.getStatus())
-                .body(ErrorResponse.of(errorCode));
+                .body(ApiResponse.error(errorCode));
     }
 
 }
