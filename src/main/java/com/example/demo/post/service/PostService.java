@@ -4,8 +4,9 @@ import com.example.demo.global.exception.CustomException;
 import com.example.demo.global.exception.ErrorCode;
 import com.example.demo.post.domain.Post;
 import com.example.demo.post.repository.PostRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,10 +37,8 @@ public class PostService {
     }
     
     // 게시글 목록 조회(최신순)
-    public List<Post> getAll() {
-        // "최신순"을 정말 "작성일 기준 최신"으로 정의한다면 createdAt 사용
-        // id를 사용해도 최신 생성과 일치하기 때문에 선택사항
-        return postRepository.findAll(Sort.by(Sort.Direction.DESC,"id"));
+    public Page<Post> getAll(Pageable pageable) {
+        return postRepository.findAll(pageable);
     }
 
     // 게시글 수정
