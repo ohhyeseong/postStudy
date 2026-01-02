@@ -11,6 +11,7 @@ import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -40,9 +41,10 @@ public class PostController {
     // 게시글 목록 조회(페이징)
     @GetMapping
     public ApiResponse<Page<PostResponse>> getAll(
-            @PageableDefault(size = 10, sort = "id")Pageable pageable
+            @RequestParam(required = false) String keyword,
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC)Pageable pageable
             ) {
-        Page<PostResponse> data = postService.getAll(pageable)
+        Page<PostResponse> data = postService.getAll(keyword, pageable)
                 .map(PostResponse::from);
         return ApiResponse.ok(data);
     }

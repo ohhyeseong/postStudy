@@ -37,8 +37,11 @@ public class PostService {
     }
     
     // 게시글 목록 조회(최신순)
-    public Page<Post> getAll(Pageable pageable) {
-        return postRepository.findAll(pageable);
+    public Page<Post> getAll(String keyword, Pageable pageable) {
+        if(keyword == null || keyword.isBlank()){
+            return postRepository.findAll(pageable);
+        }
+        return postRepository.findByTitleContaining(keyword, pageable);
     }
 
     // 게시글 수정
